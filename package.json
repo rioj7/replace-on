@@ -1,0 +1,46 @@
+{
+  "name": "replace-on",
+  "displayName": "Replace On",
+  "description": "Replace changed selection or word based on rules.",
+  "version": "0.1.0",
+  "publisher": "rioj7",
+  "license": "MIT",
+  "engines": { "vscode": "^1.55.0" },
+  "categories": [ "Other" ],
+  "keywords": ["replace","selection","word"],
+  "galleryBanner": {"color": "#000080", "theme": "dark"},
+  "activationEvents": [
+    "*",
+    "onCommand:replace-on.selection-changed"
+  ],
+  "main": "./replace-on",
+  "browser": "./replace-on",
+  "contributes": {
+    "commands": [
+      {
+        "command": "replace-on.selection-changed",
+        "category": "Replace On",
+        "title": "Replace selection/word by defined rules"
+      }
+    ],
+    "configuration": {
+      "title": "Replace On",
+      "properties": {
+        "replace-on.selection-changed": {
+          "type": "object",
+          "default": {},
+          "scope": "resource",
+          "description": "What to search/replace if selection changed."
+        }
+      }
+    }
+  },
+  "homepage": "https://github.com/rioj7/replace-on",
+  "bugs": {
+    "url": "https://github.com/rioj7/replace-on/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rioj7/replace-on.git"
+  }
+}
