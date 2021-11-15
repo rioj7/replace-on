@@ -2,7 +2,7 @@
   "name": "replace-on",
   "displayName": "Replace On",
   "description": "Replace changed selection or word based on rules.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "rioj7",
   "license": "MIT",
   "engines": { "vscode": "^1.55.0" },

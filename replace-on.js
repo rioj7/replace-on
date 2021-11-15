@@ -9,6 +9,7 @@ const isUri = obj => isObject(obj) && obj.hasOwnProperty('scheme');
 class ReplaceProvider {
   constructor() {
     this.replaceMap = {};
+    this.ignoreNextSelectionChanged = false;
   }
   /** @param {vscode.TextEditor} editor */
   updateEditorReplaceMap(editor) {
@@ -46,6 +47,10 @@ class ReplaceProvider {
   }
   /** @param {vscode.TextEditor} editor @param {vscode.TextEditorEdit} edit */
   selectionChanged(editor, edit, args, byCommand) {
+    if (this.ignoreNextSelectionChanged) {
+      this.ignoreNextSelectionChanged = false;
+      return;
+    }
     let replaceMap = this.replaceMap;
     if (args) {
       replaceMap = this.parseConfiguration(args, editor.document.languageId);
@@ -66,6 +71,8 @@ class ReplaceProvider {
             text = text.replace(rule.search, rule.replace);
           }
           edit.replace(selection, text);
+          this.ignoreNextSelectionChanged = true;
+          break;
         }
       }
     }

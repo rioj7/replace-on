@@ -59,3 +59,7 @@ The object with search/replace rules has the following format:
     }
   }
 ```
+
+# TODO
+
+* replace current "word" on command (use all rules)
