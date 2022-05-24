@@ -31,19 +31,36 @@ class ReplaceProvider {
     for (const search in replaceJSON) {
       if (!replaceJSON.hasOwnProperty(search)) { continue; }
       const properties = replaceJSON[search];
-      let rule = {};
-      rule.replace = getProperty(properties, 'replace');
-      if (rule.replace === undefined) { continue; }
-      rule.immediate = getProperty(properties, 'immediate');
-      rule.literal = getProperty(properties, 'literal');
-      if (rule.literal) {
-        rule.search = search;
+      let cycle = getProperty(properties, 'cycle');
+      if (cycle) {
+        cycle = [...cycle];
+        cycle.push(getProperty(properties, 'withKey', true) ? search : cycle[0]);
+        cycle.unshift(search);
+        let immediate = getProperty(properties, 'immediate');
+        let literal = true;
+        for (let index = 0; index < cycle.length-1; index++) {
+          const search1 = cycle[index];
+          const replace = cycle[index+1];
+          this.processRule(replaceMap, search1, {replace, literal, immediate});
+        }
       } else {
-        let flags = getProperty(properties, 'flags');
-        rule.search = new RegExp(search, flags);
+        this.processRule(replaceMap, search, properties);
       }
-      replaceMap[search] = rule;
     }
+  }
+  processRule(replaceMap, search, properties) {
+    let rule = {};
+    rule.replace = getProperty(properties, 'replace');
+    if (rule.replace === undefined) { return; }
+    rule.immediate = getProperty(properties, 'immediate');
+    rule.literal = getProperty(properties, 'literal');
+    if (rule.literal) {
+      rule.search = search;
+    } else {
+      let flags = getProperty(properties, 'flags');
+      rule.search = new RegExp(search, flags);
+    }
+    replaceMap[search] = rule;
   }
   /** @param {vscode.TextEditor} editor @param {vscode.TextEditorEdit} edit */
   selectionChanged(editor, edit, args, byCommand) {

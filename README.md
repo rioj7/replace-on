@@ -36,6 +36,51 @@ The object with search/replace rules has the following format:
     * `"immediate"`: a boolean that signals that this rule can be applied the moment the selection changes (default: `false`)
     * `"literal"`: a boolean that signals that the search should be for a literal string, when `false` the search is using Regex (default: `false`)
     * `"flags"`: a string of flags used in the regex search. Only `"i"` (ignore case) makes sense because the search string must match the whole selection (default: `""`)
+    * `"cycle"`: (Optional) an **array** of **literal** strings
+    * `"withKey"`: (Optional) a boolean that signals that the key string is part of the cycle (default: `true`)
+
+### `cycle` property
+
+If you define the `"cycle"` property:
+
+* only the `"immediate"` and `"withKey"` properties are used.
+* it implies: `"literal": true`
+
+The `"cycle"` property is kind of syntax sugar. It generates a set of rules behind the scene you could have defined yourself.
+
+The `"withKey"` property determines if the object key is part of the cycle. If you start with a placeholder string but do not want that string in the cycle use:
+
+```
+  "replace-on.selection-changed": {
+    "all": {
+      "foo_placeholer": {
+        "cycle": ["Foo", "Bar"],
+        "withKey": false
+      }
+    }
+  }
+```
+
+Is equivalent with:
+
+```
+  "replace-on.selection-changed": {
+    "all": {
+      "foo_placeholer": {
+        "replace": "Foo",
+        "literal": true
+      },
+      "Foo": {
+        "replace": "Bar",
+        "literal": true
+      },
+      "Bar": {
+        "replace": "Foo",
+        "literal": true
+      }
+    }
+  }
+```
 
 ## Example
 
